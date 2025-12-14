@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import federation from "@originjs/vite-plugin-federation";
+import { notifyOnRebuild } from "@antdevx/vite-plugin-hmr-sync";
 
 export default defineConfig({
   plugins: [
@@ -19,6 +20,13 @@ export default defineConfig({
           requiredVersion: "^18.2.0",
         },
       },
+    }),
+    // Notifica al host cuando el remoto NFC se recompila para mantener el shell sincronizado.
+    notifyOnRebuild({
+      appName: "nfc",
+      hostUrl: "http://localhost:5173",
+      endpoint: "/on-child-rebuild",
+      notifyOnSuccessOnly: true,
     }),
   ],
   server: {

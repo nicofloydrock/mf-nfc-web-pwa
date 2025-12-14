@@ -1,0 +1,39 @@
+{
+  "app": {
+    "invalidConfig": "Config no recibida o token inválido.",
+    "anonymousUser": "Operador"
+  },
+  "header": {
+    "microfrontLabel": "Microfront NFC",
+    "title": "Lector NFC (Web NFC)",
+    "sessionLabel": "Sesión",
+    "tokenLabel": "Token válido",
+    "remoteLabel": "remote",
+    "moduleLabel": "expose",
+    "notifyCta": "Alertar host",
+    "notifyBody": "Lectura NFC: alerta enviada desde el MF."
+  },
+  "panel": {
+    "subtitle": "Lector NFC",
+    "title": "Leer tarjeta",
+    "description": "Requiere Android + Chrome y acción del usuario.",
+    "cta": {
+      "idle": "Leer NFC",
+      "requesting": "Solicitando permiso...",
+      "reading": "Leyendo..."
+    },
+    "unsupported": "Este dispositivo/navegador no soporta Web NFC.",
+    "errorGeneric": "Error al leer NFC.",
+    "resultTitle": "Resultado",
+    "noPayload": "Aún no se ha leído ninguna tag.",
+    "sessionLabel": "Sesión"
+  },
+  "tester": {
+    "title": "Config de prueba",
+    "description": "Pega un objeto JSON con token/usuario para probar NFC en modo standalone.",
+    "placeholder": "{\n  \"token\": \"NICORIVERA\",\n  \"user\": { \"id\": \"operator-1\", \"name\": \"Operador Demo\" }\n}",
+    "applyCta": "Usar config",
+    "demoCta": "Cargar demo",
+    "errorInvalid": "JSON inválido, revisa el formato."
+  }
+}

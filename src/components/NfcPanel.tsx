@@ -1,13 +1,19 @@
+// Panel de lectura NFC con manejo de estados y errores.
 import { useState } from "react";
 
 type Props = {
+  copy: {
+    subtitle: string;
+    title: string;
+    description: string;
+    cta: { idle: string; requesting: string; reading: string };
+    errorGeneric: string;
+  };
   onResult: (text: string) => void;
 };
 
-export function NfcPanel({ onResult }: Props) {
-  const [status, setStatus] = useState<"idle" | "requesting" | "reading" | "error">(
-    "idle",
-  );
+export function NfcPanel({ onResult, copy }: Props) {
+  const [status, setStatus] = useState<"idle" | "requesting" | "reading" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
   const handleScan = async () => {
@@ -15,7 +21,7 @@ export function NfcPanel({ onResult }: Props) {
     setStatus("requesting");
     if (!("NDEFReader" in window)) {
       setStatus("error");
-      setError("NFC no soportado en este dispositivo/navegador.");
+      setError(copy.errorGeneric);
       return;
     }
 
@@ -24,7 +30,7 @@ export function NfcPanel({ onResult }: Props) {
       const reader = new NDEFReader();
       await reader.scan();
       setStatus("reading");
-      reader.onreading = (event: any) => {
+      reader.onreading = (event: { message?: { records?: Array<{ recordType?: string; data?: BufferSource; encoding?: string }> } }) => {
         const records = event.message?.records || [];
         const record = records[0];
         let text = "Tag leída (sin payload legible).";
@@ -41,14 +47,14 @@ export function NfcPanel({ onResult }: Props) {
         onResult(text);
         setStatus("idle");
       };
-      reader.onerror = (e: any) => {
+      reader.onerror = (e: { message?: string }) => {
         setStatus("error");
-        setError(e?.message || "Error al leer NFC.");
+        setError(e?.message || copy.errorGeneric);
       };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       setStatus("error");
-      setError(message);
+      setError(message || copy.errorGeneric);
     }
   };
 
@@ -57,12 +63,10 @@ export function NfcPanel({ onResult }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-            Lector NFC
+            {copy.subtitle}
           </p>
-          <h2 className="text-xl font-semibold text-white">Leer tarjeta</h2>
-          <p className="text-xs text-slate-300">
-            Requiere Android + Chrome y acción del usuario.
-          </p>
+          <h2 className="text-xl font-semibold text-white">{copy.title}</h2>
+          <p className="text-xs text-slate-300">{copy.description}</p>
         </div>
         <button
           className="rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-emerald-950 shadow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
@@ -70,10 +74,10 @@ export function NfcPanel({ onResult }: Props) {
           disabled={status === "requesting" || status === "reading"}
         >
           {status === "reading"
-            ? "Leyendo..."
+            ? copy.cta.reading
             : status === "requesting"
-            ? "Solicitando permiso..."
-            : "Leer NFC"}
+            ? copy.cta.requesting
+            : copy.cta.idle}
         </button>
       </div>
       {error && (
